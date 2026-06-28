@@ -3,7 +3,7 @@
 ## Links
 - **Live app:** https://youthpay-hackathon.vercel.app
 - **GitHub repo:** https://github.com/Cyber-Naimo/youthpay-hackathon
-- **Demo video (Loom):** https://www.loom.com/share/f167c74b059f47feaf22899e93bf783c
+- **Demo video (Loom):** https://www.loom.com/share/22e295fab6e44d8bb5039efb555f1206
 - **Architecture / write-up:** [docs/ARCHITECTURE.md](./ARCHITECTURE.md)
 - **Slide deck:** [docs/presentation.html](./presentation.html)
 

@@ -7,7 +7,7 @@ insights, budgets, savings goals, and personalized recommendations.
 
 > Saving made simple — for teens, and for the parents who guide them.
 
-**🔗 [Live app](https://youthpay-hackathon.vercel.app) · 🎬 [Demo (Loom)](https://www.loom.com/share/f167c74b059f47feaf22899e93bf783c) · 📐 [Architecture](docs/ARCHITECTURE.md) · 🖼 [Slide deck](docs/presentation.html) · 📋 [Submission pack](docs/SUBMISSION.md)**
+**🔗 [Live app](https://youthpay-hackathon.vercel.app) · 🎬 [Demo (Loom)](https://www.loom.com/share/22e295fab6e44d8bb5039efb555f1206) · 📐 [Architecture](docs/ARCHITECTURE.md) · 🖼 [Slide deck](docs/presentation.html) · 📋 [Submission pack](docs/SUBMISSION.md)**
 
 ---
 
