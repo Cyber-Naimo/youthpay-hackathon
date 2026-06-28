@@ -1,6 +1,6 @@
-# Bachat — Technical Architecture & Write-up
+# Bachat Technical Architecture & Write-up
 
-> Bachat ("savings" in Urdu) by YouthPay — a financial-intelligence app that turns
+> Bachat ("savings" in Urdu) by YouthPay, a financial-intelligence app that turns
 > Pakistani bank / wallet / crypto transaction **emails & SMS** into clear money
 > insights for teenagers (13–17) and their parents.
 
@@ -13,12 +13,12 @@
 ## 1. The problem
 
 Pakistani teens are getting their first bank accounts, wallets (Easypaisa,
-JazzCash, SadaPay, NayaPay), and even crypto — but **no tool helps them
+JazzCash, SadaPay, NayaPay), and even crypto, but **no tool helps them
 understand their money**. Banks send raw alert **emails and SMS** that nobody
 reads. Parents have zero visibility. Financial literacy is low.
 
 **Insight:** the data already exists in every teen's inbox. The job isn't to add
-another bank — it's to **parse the messages they already receive** and turn them
+another bank, it's to **parse the messages they already receive** and turn them
 into understanding + good habits.
 
 So Bachat is built around the *pipeline*, not just a dashboard:
