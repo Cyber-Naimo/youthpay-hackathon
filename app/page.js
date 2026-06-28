@@ -12,6 +12,7 @@ import {
   UploadCloud,
   MessageSquareText,
   PencilLine,
+  Bitcoin,
 } from "lucide-react";
 import UploadZone from "@/components/UploadZone";
 import PasteSMS from "@/components/PasteSMS";
@@ -70,6 +71,7 @@ export default function Landing() {
                 { icon: Brain, label: t("fAi") },
                 { icon: ShieldCheck, label: t("fDup") },
                 { icon: Users, label: t("fViews") },
+                { icon: Bitcoin, label: t("fWeb3") },
               ].map((f) => (
                 <li
                   key={f.label}
@@ -154,8 +156,79 @@ export default function Landing() {
           </div>
         </div>
 
-        <footer className="mt-16 border-t border-slate-200 pt-6 text-center text-xs text-slate-400">
-          {t("footer")} • Tilla by YouthPay
+        {/* How it works — for first-time visitors / judges */}
+        <section className="mt-16">
+          <div className="mb-6 text-center">
+            <h2 className="text-2xl font-extrabold tracking-tight text-slate-900 font-[family-name:var(--font-jakarta)]">
+              How it works
+            </h2>
+            <p className="mt-1 text-sm text-slate-500">
+              From raw bank alerts to clear money insights, in four steps.
+            </p>
+          </div>
+          <ol className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {[
+              {
+                icon: UploadCloud,
+                step: "1",
+                title: "Add your data",
+                text: "Connect Gmail, upload .eml files, paste an SMS, or add manually. Or click Load Sample to try instantly.",
+              },
+              {
+                icon: Brain,
+                step: "2",
+                title: "We parse it",
+                text: "8 Pakistani banks + wallets + Binance crypto are read by smart rules, with an AI fallback for anything unusual.",
+              },
+              {
+                icon: ShieldCheck,
+                step: "3",
+                title: "We organize it",
+                text: "Every transaction is categorized, duplicates are flagged, and recurring subscriptions are detected automatically.",
+              },
+              {
+                icon: Sparkles,
+                step: "4",
+                title: "You get insights",
+                text: "Health score, budgets, savings goals, needs-vs-wants, and personalized recommendations, for teens and parents.",
+              },
+            ].map((s) => (
+              <li
+                key={s.step}
+                className="rounded-3xl border border-slate-100 bg-white p-5 shadow-sm"
+              >
+                <div className="flex items-center gap-2.5">
+                  <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-600 to-fuchsia-500 text-white">
+                    <s.icon size={18} strokeWidth={2.2} />
+                  </span>
+                  <span className="text-xs font-bold uppercase tracking-wide text-slate-400">
+                    Step {s.step}
+                  </span>
+                </div>
+                <h3 className="mt-3 text-sm font-extrabold text-slate-900">{s.title}</h3>
+                <p className="mt-1 text-sm leading-snug text-slate-500">{s.text}</p>
+              </li>
+            ))}
+          </ol>
+        </section>
+
+        <footer className="mt-16 border-t border-slate-200 pt-6">
+          <div className="flex flex-col items-center justify-between gap-3 text-center sm:flex-row sm:text-left">
+            <div className="flex items-center gap-2">
+              <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-gradient-to-br from-indigo-600 to-fuchsia-500 text-xs font-black text-white">
+                B
+              </span>
+              <span className="text-sm font-extrabold text-slate-700">
+                Bachat <span className="font-medium text-slate-400">by YouthPay</span>
+              </span>
+            </div>
+            <p className="text-xs text-slate-400">
+              Saving made simple · Built for Pakistani teens · Amounts in PKR (Rs.)
+            </p>
+          </div>
+          <p className="mt-4 text-center text-[11px] text-slate-300">
+            © {new Date().getFullYear()} Bachat · YouthPay Financial Intelligence Engine
+          </p>
         </footer>
       </div>
     </main>
@@ -181,19 +254,19 @@ function MethodTab({ active, onClick, icon: Icon, label }) {
 
 function Logo() {
   return (
-    <div className="flex items-center gap-2.5">
+    <Link href="/" className="flex items-center gap-2.5" aria-label="Bachat home">
       <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-600 to-fuchsia-500 text-white shadow-sm">
-        <span className="text-base font-black font-[family-name:var(--font-jakarta)]">T</span>
+        <span className="text-base font-black font-[family-name:var(--font-jakarta)]">B</span>
       </span>
       <div className="leading-none">
         <p className="text-lg font-extrabold tracking-tight font-[family-name:var(--font-jakarta)]">
-          Tilla
+          Bachat
         </p>
         <p className="mt-0.5 text-[10px] font-semibold uppercase tracking-wider text-slate-400">
           by YouthPay
         </p>
       </div>
-    </div>
+    </Link>
   );
 }
 

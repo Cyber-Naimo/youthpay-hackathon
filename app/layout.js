@@ -17,9 +17,9 @@ const jakarta = Plus_Jakarta_Sans({
 });
 
 export const metadata = {
-  title: "YouthPay — Teen Financial Intelligence",
+  title: "Bachat — Saving made simple | YouthPay",
   description:
-    "Pakistan's first financial intelligence platform for teenagers. Understand your teen's spending with smart insights.",
+    "Bachat by YouthPay — Pakistan's financial intelligence app for teenagers. Turn bank, wallet and crypto alerts into clear spending insights, budgets and savings goals.",
 };
 
 export const viewport = {

@@ -207,11 +207,11 @@ export default function ActivityPanel() {
         </div>
       ) : (
         <ul className="nice-scroll max-h-[560px] space-y-2 overflow-y-auto pr-1">
-          {list.map((t) =>
+          {list.map((t, i) =>
             editing === t.id ? (
-              <EditRow key={t.id} draft={draft} setDraft={setDraft} onSave={() => saveEdit(t.id)} onCancel={() => setEditing(null)} />
+              <EditRow key={`${t.id}-${i}`} draft={draft} setDraft={setDraft} onSave={() => saveEdit(t.id)} onCancel={() => setEditing(null)} />
             ) : (
-              <Row key={t.id} t={t} onEdit={() => startEdit(t)} onDelete={() => remove(t.id)} />
+              <Row key={`${t.id}-${i}`} t={t} onEdit={() => startEdit(t)} onDelete={() => remove(t.id)} />
             )
           )}
         </ul>

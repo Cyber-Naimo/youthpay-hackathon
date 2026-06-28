@@ -37,7 +37,7 @@ export default function SpendingBreakdown({ data = [] }) {
       ? "Most of your spending is uncategorised."
       : wantsPct > 50
       ? `${wantsPct}% of your spending is on "wants". Try the 50/30/20 rule: keep wants nearer 30%.`
-      : `Nice balance — ${needsPct}% needs, ${wantsPct}% wants. You're spending mostly on essentials.`;
+      : `Nice balance, ${needsPct}% needs, ${wantsPct}% wants. You're spending mostly on essentials.`;
 
   return (
     <div>

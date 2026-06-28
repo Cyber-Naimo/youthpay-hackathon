@@ -32,12 +32,15 @@ import SpendingBreakdown from "@/components/SpendingBreakdown";
 import InsightCard from "@/components/InsightCard";
 import GoalsCard from "@/components/GoalsCard";
 import CoachWidget from "@/components/CoachWidget";
+import AutoGmailSync from "@/components/AutoGmailSync";
 import ActivityPanel from "@/components/ActivityPanel";
 import RecommendationsCard from "@/components/RecommendationsCard";
 import SubscriptionsCard from "@/components/SubscriptionsCard";
 import RewardsCard from "@/components/RewardsCard";
+import BudgetsCard from "@/components/BudgetsCard";
+import LessonCard from "@/components/LessonCard";
 
-/* ── Tilla: light-aurora teen dashboard (sidebar + main/rail layout) ── */
+/* ── Bachat: light-aurora teen dashboard (sidebar + main/rail layout) ── */
 
 export default function TeenDashboard() {
   const { transactions, loading } = useTransactions();
@@ -91,6 +94,11 @@ export default function TeenDashboard() {
             </Link>
           </header>
 
+          {/* Money lesson of the day — top banner */}
+          <div className="mb-5">
+            <LessonCard />
+          </div>
+
           {/* Hero balance — aurora gradient, full width */}
           <section className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-indigo-600 via-violet-600 to-fuchsia-500 p-6 text-white shadow-lg shadow-indigo-200/60 sm:p-7">
             <Aurora />
@@ -143,46 +151,53 @@ export default function TeenDashboard() {
             <Kpi icon={ArrowUpRight} tint="from-fuchsia-500 to-pink-500" label={t("received")} value={formatPKR(stats.totalReceived)} />
           </section>
 
-          {/* Main + rail — balanced heights */}
-          <div className="mt-5 space-y-5 lg:flex lg:gap-5 lg:space-y-0">
-            {/* Main */}
-            <div className="min-w-0 flex-1 space-y-5">
-              <Card>
-                <CardHead icon={LineIcon} title={t("last14")} />
-                <TrendChart data={trend} variant="teen" />
-              </Card>
+          {/* Auto-balancing masonry — fills both columns evenly, no dead space */}
+          <div className="mt-5 gap-5 lg:columns-2 [&>*]:mb-5 [&>*]:break-inside-avoid">
+            <Card>
+              <CardHead icon={LineIcon} title={t("last14")} />
+              <TrendChart data={trend} variant="teen" />
+            </Card>
 
-              <Card>
-                <CardHead icon={PieIcon} title={t("whereWent")} />
-                <SpendingBreakdown data={stats.breakdown} />
-              </Card>
-
-              <RecommendationsCard transactions={transactions} variant="teen" />
+            <div>
+              <RewardsCard />
             </div>
 
-            {/* Rail */}
-            <div className="space-y-5 lg:w-[340px] lg:shrink-0">
-              <RewardsCard />
+            <Card>
+              <CardHead icon={PieIcon} title={t("whereWent")} />
+              <SpendingBreakdown data={stats.breakdown} />
+            </Card>
 
-              <Card className="flex flex-col items-center">
-                <p className="mb-2 text-xs font-bold uppercase tracking-wide text-slate-400">
-                  {t("healthScore")}
-                </p>
-                <HealthScore score={stats.healthScore} variant="teen" size={128} />
-                {streak > 0 && (
-                  <span className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-amber-50 px-3 py-1 text-xs font-bold text-amber-600">
-                    <Flame size={13} /> {streak} {t("onTrackStreak")}
-                  </span>
-                )}
-              </Card>
+            <Card className="flex flex-col items-center">
+              <p className="mb-2 text-xs font-bold uppercase tracking-wide text-slate-400">
+                {t("healthScore")}
+              </p>
+              <HealthScore score={stats.healthScore} variant="teen" size={128} />
+              {streak > 0 && (
+                <span className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-amber-50 px-3 py-1 text-xs font-bold text-amber-600">
+                  <Flame size={13} /> {streak} {t("onTrackStreak")}
+                </span>
+              )}
+            </Card>
 
+            <div>
               <GoalsCard streak={streak} />
+            </div>
 
+            <div>
+              <BudgetsCard />
+            </div>
+
+            <div>
               <SubscriptionsCard transactions={transactions} variant="teen" />
             </div>
           </div>
 
-          {/* Smart insights — clean full-width row */}
+          {/* Activity — full panel inline (search, filters, add/edit/delete) */}
+          <section id="activity" className="mt-5">
+            <ActivityPanel />
+          </section>
+
+          {/* Smart insights — below transactions */}
           <section className="mt-5">
             <h3 className="mb-3 flex items-center gap-2 text-sm font-extrabold text-slate-900">
               <Sparkles size={16} className="text-indigo-600" /> {t("smartInsights")}
@@ -194,15 +209,21 @@ export default function TeenDashboard() {
             </div>
           </section>
 
-          {/* Activity — full panel inline (search, filters, add/edit/delete) */}
-          <section id="activity" className="mt-5">
-            <ActivityPanel />
+          {/* What YouthPay recommends — last, the key takeaway */}
+          <section className="mt-5">
+            <RecommendationsCard transactions={transactions} variant="teen" />
           </section>
+
+          <footer className="mt-8 border-t border-slate-200 pt-5 text-center text-xs text-slate-400">
+            <span className="font-bold text-slate-500">Bachat</span> by YouthPay · saving made simple ·
+            amounts in PKR (Rs.)
+          </footer>
         </div>
       </main>
 
-      {/* Floating AI coach */}
+      {/* Floating AI coach + auto Gmail sync */}
       <CoachWidget transactions={transactions} variant="teen" />
+      <AutoGmailSync />
     </div>
   );
 }
@@ -211,19 +232,19 @@ export default function TeenDashboard() {
 
 function Logo() {
   return (
-    <div className="flex items-center gap-2.5">
+    <Link href="/" className="flex items-center gap-2.5" aria-label="Bachat home">
       <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-600 to-fuchsia-500 text-white shadow-sm">
-        <span className="text-base font-black font-[family-name:var(--font-jakarta)]">T</span>
+        <span className="text-base font-black font-[family-name:var(--font-jakarta)]">B</span>
       </span>
       <div className="leading-none">
         <p className="text-lg font-extrabold tracking-tight font-[family-name:var(--font-jakarta)]">
-          Tilla
+          Bachat
         </p>
         <p className="mt-0.5 text-[10px] font-semibold uppercase tracking-wider text-slate-400">
           by YouthPay
         </p>
       </div>
-    </div>
+    </Link>
   );
 }
 
@@ -377,11 +398,11 @@ function EmptyState() {
   return (
     <main className="flex min-h-dvh flex-col items-center justify-center bg-[#FAFAFC] px-6 text-center">
       <span className="flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-600 to-fuchsia-500 text-white">
-        <span className="text-2xl font-black">T</span>
+        <span className="text-2xl font-black">B</span>
       </span>
       <h1 className="mt-5 text-xl font-extrabold text-slate-900">No data yet</h1>
       <p className="mt-2 max-w-xs text-sm text-slate-500">
-        Add some transactions first to see your Tilla dashboard.
+        Add some transactions first to see your Bachat dashboard.
       </p>
       <Link
         href="/"

@@ -16,6 +16,7 @@ import {
   Sparkles,
   Inbox,
   ChevronDown,
+  Search,
 } from "lucide-react";
 
 function safeDate(d) {
@@ -48,6 +49,8 @@ export default function TransactionList({
 }) {
   const [showAll, setShowAll] = useState(false);
   const [filter, setFilter] = useState("all");
+  const [q, setQ] = useState("");
+  const [cat, setCat] = useState("all");
 
   const sorted = useMemo(() => {
     let l = transactions
@@ -57,14 +60,16 @@ export default function TransactionList({
     return l;
   }, [transactions, showDuplicates]);
 
-  // Distinct sources present (for filter chips).
-  const sources = useMemo(() => {
-    const set = new Set(sorted.map((t) => t.source || "email"));
-    return Array.from(set);
-  }, [sorted]);
+  // Distinct sources + categories present (for filters).
+  const sources = useMemo(() => Array.from(new Set(sorted.map((t) => t.source || "email"))), [sorted]);
+  const cats = useMemo(() => Array.from(new Set(sorted.map((t) => t.category || "Other"))).sort(), [sorted]);
 
-  const filtered =
-    filter === "all" ? sorted : sorted.filter((t) => (t.source || "email") === filter);
+  const filtered = sorted.filter((t) => {
+    if (filter !== "all" && (t.source || "email") !== filter) return false;
+    if (cat !== "all" && (t.category || "Other") !== cat) return false;
+    if (q.trim() && !(t.merchant_name || "").toLowerCase().includes(q.toLowerCase())) return false;
+    return true;
+  });
 
   const collapsed = limit && !showAll;
   const list = collapsed ? filtered.slice(0, limit) : filtered;
@@ -80,6 +85,31 @@ export default function TransactionList({
 
   return (
     <div>
+      {/* Search + category */}
+      <div className="mb-3 flex flex-col gap-2 sm:flex-row">
+        <div className="flex flex-1 items-center gap-2 rounded-xl border border-slate-200 bg-slate-50 px-3">
+          <Search size={15} className="text-slate-400" />
+          <input
+            value={q}
+            onChange={(e) => setQ(e.target.value)}
+            placeholder="Search merchant"
+            className="w-full bg-transparent py-2 text-sm focus:outline-none"
+          />
+        </div>
+        {cats.length > 1 && (
+          <select
+            value={cat}
+            onChange={(e) => setCat(e.target.value)}
+            className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-600 focus:outline-none"
+          >
+            <option value="all">All categories</option>
+            {cats.map((c) => (
+              <option key={c} value={c}>{c}</option>
+            ))}
+          </select>
+        )}
+      </div>
+
       {/* Source filter */}
       {sources.length > 1 && (
         <div className="mb-3 flex flex-wrap gap-1.5">
@@ -97,18 +127,24 @@ export default function TransactionList({
         </div>
       )}
 
+      {list.length === 0 && (
+        <p className="rounded-2xl border border-dashed border-slate-200 py-8 text-center text-sm text-slate-400">
+          No transactions match your filters.
+        </p>
+      )}
+
       <ul
         className={`flex flex-col gap-2 ${
           !collapsed && list.length > 8 ? "nice-scroll max-h-[480px] overflow-y-auto pr-1" : ""
         }`}
       >
-        {list.map((t) => {
+        {list.map((t, i) => {
           const meta = CATEGORY_META[t.category] || CATEGORY_META.Other;
           const src = sourceMeta(t.source || "email");
           const isCredit = t.type === "credit";
           return (
             <li
-              key={t.id}
+              key={`${t.id}-${i}`}
               className={`flex items-center gap-3 rounded-2xl border border-slate-100 bg-white p-3 card-shadow ${
                 t.is_duplicate ? "opacity-60" : ""
               }`}

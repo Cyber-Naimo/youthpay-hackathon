@@ -23,6 +23,7 @@ import SpendingChart, { TrendChart } from "@/components/SpendingChart";
 import InsightCard from "@/components/InsightCard";
 import TransactionList from "@/components/TransactionList";
 import CoachWidget from "@/components/CoachWidget";
+import AutoGmailSync from "@/components/AutoGmailSync";
 import ParentGate from "@/components/ParentGate";
 import RecommendationsCard from "@/components/RecommendationsCard";
 import SubscriptionsCard from "@/components/SubscriptionsCard";
@@ -109,12 +110,6 @@ function ParentDashboardInner() {
             </div>
           </div>
           <div className="no-print flex items-center gap-2">
-            <Link
-              href="/teen#activity"
-              className="hidden items-center gap-1.5 rounded-lg bg-slate-100 px-3 py-2 text-xs font-semibold text-slate-600 transition hover:bg-slate-200 sm:flex"
-            >
-              <Receipt size={14} /> Activity
-            </Link>
             <Link
               href="/parent/report"
               className="flex items-center gap-1.5 rounded-lg bg-trust-600 px-3 py-2 text-xs font-semibold text-white transition hover:bg-trust-700"
@@ -233,7 +228,20 @@ function ParentDashboardInner() {
           </div>
         </div>
 
-        {/* Insights */}
+        {/* Transactions — moved up */}
+        <section className="mt-5">
+          <h2 className="mb-3 text-sm font-extrabold text-slate-900">All transactions</h2>
+          <Panel>
+            <TransactionList transactions={transactions} variant="parent" />
+          </Panel>
+        </section>
+
+        {/* Subscriptions */}
+        <section className="mt-5">
+          <SubscriptionsCard transactions={transactions} variant="parent" />
+        </section>
+
+        {/* Key insights — moved down */}
         <section className="mt-5">
           <h2 className="mb-3 text-sm font-extrabold text-slate-900">Key insights</h2>
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
@@ -243,24 +251,16 @@ function ParentDashboardInner() {
           </div>
         </section>
 
-        {/* Recommendations + subscriptions */}
-        <section className="mt-5 grid gap-4 lg:grid-cols-2">
-          <RecommendationsCard transactions={transactions} variant="parent" />
-          <SubscriptionsCard transactions={transactions} variant="parent" />
-        </section>
-
-        {/* Transactions */}
+        {/* What YouthPay recommends — last, the key takeaway for parents */}
         <section className="mt-5">
-          <h2 className="mb-3 text-sm font-extrabold text-slate-900">All transactions</h2>
-          <Panel>
-            <TransactionList transactions={transactions} variant="parent" />
-          </Panel>
+          <RecommendationsCard transactions={transactions} variant="parent" />
         </section>
       </div>
 
-      {/* Floating AI coach */}
+      {/* Floating AI coach + auto Gmail sync */}
       <div className="no-print">
         <CoachWidget transactions={transactions} variant="parent" />
+        <AutoGmailSync />
       </div>
     </main>
   );

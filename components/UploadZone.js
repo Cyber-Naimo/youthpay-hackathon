@@ -13,6 +13,11 @@ import {
 } from "lucide-react";
 import { getMockEmails } from "@/data/mock-emails";
 import { mergeTransactions, clearTransactions, getTransactions } from "@/lib/store";
+import LoadingOverlay from "@/components/LoadingOverlay";
+
+const MIN_LOADER_MS = 2000;
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+const minWait = (t0) => sleep(Math.max(0, MIN_LOADER_MS - (Date.now() - t0)));
 
 export default function UploadZone({ onComplete }) {
   const [status, setStatus] = useState("idle"); // idle | loading | error | done
@@ -60,30 +65,53 @@ export default function UploadZone({ onComplete }) {
     onComplete?.([]);
   }
 
+  // Rotate fun/status messages while an async op runs (KodeKloud-style).
+  function startTips(lines) {
+    let i = 0;
+    setMessage(lines[0]);
+    const id = setInterval(() => {
+      i = (i + 1) % lines.length;
+      setMessage(lines[i]);
+    }, 1900);
+    return () => clearInterval(id);
+  }
+
   // Pull emails from a connected Gmail account through the parse pipeline.
   const fetchFromGmail = useCallback(async () => {
     setStatus("loading");
-    // Read straight from storage so the value survives the OAuth redirect.
+    const t0 = Date.now();
     const d = parseInt(window.localStorage.getItem("yp_gmail_days"), 10) || days || 30;
-    setMessage(`Fetching last ${d} days of bank emails from Gmail…`);
+    const stop = startTips([
+      `Connecting to Gmail…`,
+      `Reading last ${d} days of bank emails…`,
+      `Tip: most Pakistani banks alert by SMS too, paste those here.`,
+      `Parsing transactions…`,
+      `Did you know? The 50/30/20 rule keeps spending balanced.`,
+      `Categorizing spends & spotting subscriptions…`,
+      `Converting any crypto to PKR…`,
+      `Almost there…`,
+    ]);
     try {
       const res = await fetch(`/api/gmail/fetch?days=${d}`);
       if (res.status === 401) {
+        stop();
         setStatus("error");
         setMessage("Gmail not connected. Click Connect Gmail first.");
         return;
       }
       if (!res.ok) throw new Error((await res.json()).detail || "Gmail fetch failed");
       const data = await res.json();
+      await minWait(t0);
+      stop();
       if (!data.transactions || data.transactions.length === 0) {
         setStatus("error");
-        setMessage(
-          `Scanned ${data.scanned || 0} email(s) but found no transaction alerts.`
-        );
+        setMessage(`Scanned ${data.scanned || 0} email(s) but found no transaction alerts.`);
         return;
       }
       finish(data.transactions, `${data.transactions.length} from Gmail (last ${data.days}d)`);
     } catch (e) {
+      await minWait(t0);
+      stop();
       setStatus("error");
       setMessage(e.message || "Gmail fetch failed.");
     }
@@ -114,7 +142,14 @@ export default function UploadZone({ onComplete }) {
 
   async function loadMock() {
     setStatus("loading");
-    setMessage("Parsing sample Pakistani bank emails…");
+    const t0 = Date.now();
+    const stop = startTips([
+      "Loading sample Pakistani bank emails…",
+      "Parsing HBL, UBL, Easypaisa, JazzCash & more…",
+      "Tip: real bank alerts work too — connect Gmail or paste an SMS.",
+      "Categorizing spends & detecting subscriptions…",
+      "Building your insights…",
+    ]);
     try {
       const emails = getMockEmails().map((e) => ({
         id: e.id,
@@ -132,8 +167,12 @@ export default function UploadZone({ onComplete }) {
       if (!res.ok) throw new Error((await res.json()).error || "Parse failed");
       const data = await res.json();
       const txs = data.transactions || [];
+      await minWait(t0);
+      stop();
       finish(txs, `${txs.length} sample`);
     } catch (e) {
+      await minWait(t0);
+      stop();
       setStatus("error");
       setMessage(e.message || "Something went wrong. Please try again.");
     }
@@ -149,6 +188,7 @@ export default function UploadZone({ onComplete }) {
       return;
     }
     setStatus("loading");
+    const t0 = Date.now();
     setMessage(`Reading ${files.length} email${files.length > 1 ? "s" : ""}…`);
     try {
       // Upload in chunks so very large folders don't hit request-size limits.
@@ -168,8 +208,10 @@ export default function UploadZone({ onComplete }) {
           "No transaction alerts found. These emails (limit changes, OTPs, login or statement notices) don't contain a spend. Upload a bank alert that shows a purchase, debit or credit."
         );
       }
+      await minWait(t0);
       finish(added, `${added.length} from ${files.length} file${files.length === 1 ? "" : "s"}`);
     } catch (e) {
+      await minWait(t0);
       setStatus("error");
       setMessage(e.message || "Upload failed. Please try again.");
     }
@@ -179,6 +221,7 @@ export default function UploadZone({ onComplete }) {
 
   return (
     <div className="w-full">
+      {loading && <LoadingOverlay message={message} />}
       <div
         role="button"
         tabIndex={0}

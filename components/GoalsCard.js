@@ -130,7 +130,7 @@ function GoalRow({ goal }) {
       {done && (
         <p className="mt-2 text-xs font-bold text-green-700">
           {t("goalReached")}
-          {surplus > 0 ? ` — ${formatPKR(surplus)} extra saved` : ""}
+          {surplus > 0 ? ` ${formatPKR(surplus)} extra saved` : ""}
         </p>
       )}
 
