@@ -1,0 +1,228 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Bachat — YouthPay Hackathon Deck</title>
+<style>
+  :root{
+    --ink:#0f172a; --muted:#64748b; --indigo:#4f46e5; --fuchsia:#ec4899; --bg:#faf9fc;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{font-family:"Segoe UI",system-ui,-apple-system,Roboto,Helvetica,Arial,sans-serif;color:var(--ink);background:#0b0712}
+  .deck{position:relative}
+  .slide{
+    min-height:100vh;width:100%;padding:8vh 9vw;display:none;flex-direction:column;justify-content:center;
+    background:var(--bg);
+  }
+  .slide.active{display:flex}
+  .kicker{font-size:.85rem;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:var(--indigo)}
+  h1{font-size:clamp(2.2rem,6vw,4rem);font-weight:900;line-height:1.02;letter-spacing:-.02em;margin:.4em 0}
+  h2{font-size:clamp(1.6rem,4vw,2.6rem);font-weight:900;letter-spacing:-.02em;margin:.1em 0 .5em}
+  p,li{font-size:clamp(1rem,1.6vw,1.25rem);line-height:1.5;color:#334155}
+  .muted{color:var(--muted)}
+  .grad{background:linear-gradient(100deg,var(--indigo),#7c3aed,var(--fuchsia));-webkit-background-clip:text;background-clip:text;color:transparent}
+  ul{margin:.6em 0 0 1.1em}
+  li{margin:.45em 0}
+  .grid{display:grid;gap:18px;margin-top:1.2em}
+  .g2{grid-template-columns:1fr 1fr}
+  .g3{grid-template-columns:repeat(3,1fr)}
+  .card{background:#fff;border:1px solid #eef0f4;border-radius:18px;padding:20px;box-shadow:0 10px 30px -18px rgba(15,23,42,.25)}
+  .card h3{font-size:1.05rem;margin-bottom:.3em}
+  .card p{font-size:.98rem}
+  .pill{display:inline-block;background:#eef2ff;color:#4338ca;font-weight:700;font-size:.8rem;padding:.3em .8em;border-radius:999px;margin:.2em .3em 0 0}
+  .logo{display:flex;align-items:center;gap:14px}
+  .mark{width:64px;height:64px;border-radius:18px;display:grid;place-items:center;color:#fff;font-weight:900;font-size:2rem;background:linear-gradient(135deg,var(--indigo),var(--fuchsia))}
+  .cover{background:radial-gradient(1200px 500px at 20% 0%,rgba(124,58,237,.25),transparent),radial-gradient(900px 500px at 90% 100%,rgba(236,72,153,.22),transparent),#0b0712;color:#fff}
+  .cover h1,.cover h2{color:#fff}
+  .cover p{color:#cbd5e1}
+  .cover .kicker{color:#c4b5fd}
+  .flow{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-top:1em}
+  .node{background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:10px 14px;font-weight:700;font-size:.95rem}
+  .node.ai{background:#fef3c7;border-color:#fde68a}
+  .node.out{background:#eef2ff;border-color:#c7d2fe}
+  .arrow{color:#94a3b8;font-weight:900}
+  .shots{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:1em}
+  .shots img{width:100%;border-radius:14px;border:1px solid #e5e7eb;box-shadow:0 14px 40px -20px rgba(15,23,42,.4)}
+  .row{display:flex;gap:28px;flex-wrap:wrap;align-items:center}
+  table{border-collapse:collapse;width:100%;margin-top:1em;font-size:.98rem}
+  td,th{border-bottom:1px solid #eef0f4;padding:10px 8px;text-align:left}
+  th{color:var(--muted);font-size:.78rem;text-transform:uppercase;letter-spacing:.08em}
+  .nav{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);display:flex;gap:8px;align-items:center;z-index:10}
+  .dot{width:9px;height:9px;border-radius:50%;background:#cbd5e1;border:none;cursor:pointer}
+  .dot.on{background:var(--indigo);width:22px;border-radius:6px}
+  .count{position:fixed;bottom:16px;right:22px;color:#94a3b8;font-size:.8rem;font-weight:700;z-index:10}
+  .hint{position:fixed;top:16px;right:22px;color:#94a3b8;font-size:.75rem;z-index:10}
+  @media print{
+    .slide{display:flex !important;min-height:100vh;page-break-after:always;break-after:page}
+    .nav,.count,.hint{display:none}
+    body{background:#fff}
+  }
+</style>
+</head>
+<body>
+<div class="hint">← → navigate · Ctrl/Cmd + P → Save as PDF (landscape)</div>
+<div class="deck" id="deck">
+
+  <!-- 1. Cover / who -->
+  <section class="slide active cover">
+    <div class="logo"><div class="mark">B</div>
+      <div><div style="font-size:1.6rem;font-weight:900">Bachat</div><div class="muted" style="letter-spacing:.1em;font-size:.8rem">BY YOUTHPAY</div></div>
+    </div>
+    <h1>Turn a teen's bank alerts<br/>into <span class="grad">money sense.</span></h1>
+    <p>Financial-intelligence for Pakistani teenagers (13–17) and their parents.<br/>“Bachat” = <em>savings</em> in Urdu. Saving made simple.</p>
+    <p style="margin-top:1.4em"><strong>Naimatullah Khan</strong> · solo build · YouthPay Challenge 1</p>
+    <p class="muted" style="font-size:.95rem">Live: youthpay-hackathon.vercel.app · Repo: github.com/Cyber-Naimo/youthpay-hackathon</p>
+  </section>
+
+  <!-- 2. Problem / why -->
+  <section class="slide">
+    <div class="kicker">The problem · why this challenge</div>
+    <h2>Teens have the data. Nobody reads it.</h2>
+    <div class="grid g3">
+      <div class="card"><h3>📥 It's already in the inbox</h3><p>Every HBL/UBL/Easypaisa/JazzCash transaction sends an email or SMS — raw, ugly, ignored.</p></div>
+      <div class="card"><h3>🙈 Parents are blind</h3><p>No visibility into a teen's spending, no way to guide habits early.</p></div>
+      <div class="card"><h3>📉 Low literacy</h3><p>First accounts, wallets, even crypto — but no tool teaches needs vs wants or saving.</p></div>
+    </div>
+    <p style="margin-top:1.4em"><strong>The real job:</strong> not “build another bank” — <span class="grad"><strong>parse what they already receive</strong></span> and turn it into understanding + better habits.</p>
+  </section>
+
+  <!-- 3. What I built -->
+  <section class="slide">
+    <div class="kicker">What I built</div>
+    <h2>A full pipeline, not just a dashboard</h2>
+    <div class="flow">
+      <span class="node">Ingest</span><span class="arrow">→</span>
+      <span class="node">Parse</span><span class="arrow">→</span>
+      <span class="node">Categorize</span><span class="arrow">→</span>
+      <span class="node">De-duplicate</span><span class="arrow">→</span>
+      <span class="node">Analyze</span><span class="arrow">→</span>
+      <span class="node out">Insights</span><span class="arrow">→</span>
+      <span class="node out">Dashboards</span>
+    </div>
+    <div class="grid g2" style="margin-top:1.4em">
+      <div class="card"><h3>4 ways in</h3><p>Gmail auto-fetch (OAuth) · .eml upload/folder · paste SMS · manual entry · or instant sample data.</p></div>
+      <div class="card"><h3>Answers real questions</h3><p>Where's the money going? What habits to fix? Impulse spending? How much saved? What would YouthPay advise?</p></div>
+    </div>
+  </section>
+
+  <!-- 4. Screens -->
+  <section class="slide">
+    <div class="kicker">The product</div>
+    <h2>Two audiences, two experiences</h2>
+    <div class="shots">
+      <img src="teen.png" alt="Teen dashboard"/>
+      <img src="parent.png" alt="Parent dashboard"/>
+    </div>
+    <p class="muted" style="margin-top:.8em">Teen “Bachat” (playful, light-aurora) · Parent (trustworthy, PIN-gated, PDF report). Bilingual English / Roman Urdu.</p>
+  </section>
+
+  <!-- 5. Architecture -->
+  <section class="slide">
+    <div class="kicker">Technical architecture</div>
+    <h2>One pipeline, every source</h2>
+    <div class="flow">
+      <span class="node">Gmail / .eml / SMS / Manual</span><span class="arrow">→</span>
+      <span class="node">API routes</span><span class="arrow">→</span>
+      <span class="node">eml.js (MIME decode)</span><span class="arrow">→</span>
+      <span class="node">parser.js (9 matchers)</span>
+    </div>
+    <div class="flow">
+      <span class="node ai">Gemini fallback (conf &lt; 0.7)</span><span class="arrow">→</span>
+      <span class="node">pipeline: categorize · dedupe</span><span class="arrow">→</span>
+      <span class="node out">reactive store (localStorage + pub/sub)</span><span class="arrow">→</span>
+      <span class="node out">insights → dashboards</span>
+    </div>
+    <div class="grid g3" style="margin-top:1.3em">
+      <div class="card"><h3>Stack</h3><p>Next.js 16 · React 19 · Tailwind v4 · Recharts · Gemini · Supabase (optional) · Vercel.</p></div>
+      <div class="card"><h3>Reactive store</h3><p>localStorage source-of-truth + pub/sub keeps every view in sync; Supabase one env var away.</p></div>
+      <div class="card"><h3>Regex-first, AI-second</h3><p>Fast, free, offline-capable; AI only for unknown formats, with graceful fallback.</p></div>
+    </div>
+  </section>
+
+  <!-- 6. Product decisions -->
+  <section class="slide">
+    <div class="kicker">Product decisions</div>
+    <h2>Depth &amp; judgement over chart-dumping</h2>
+    <ul>
+      <li><strong>Needs vs Wants, budgets, recommendations</strong> — teach money sense, not 12 generic charts.</li>
+      <li><strong>localStorage-first</strong> — judges see it work instantly; no signup wall, no auth yak-shaving.</li>
+      <li><strong>Transfers ≠ spending, credits = Income, broker payments = Investment</strong> — categories that match how a teen actually thinks.</li>
+      <li><strong>Parent vs Teen are different products</strong> — playful for the teen, trustworthy + PIN-gated for the parent.</li>
+      <li><strong>Gamification with intent</strong> — a money-tree that grows on a daily check-in streak drives the habit.</li>
+    </ul>
+  </section>
+
+  <!-- 7. Feature depth -->
+  <section class="slide">
+    <div class="kicker">Feature depth</div>
+    <h2>Beyond the brief</h2>
+    <div>
+      <span class="pill">9 bank/crypto parsers</span><span class="pill">Gmail auto-sync</span><span class="pill">SMS parsing</span>
+      <span class="pill">Web3 / crypto → PKR</span><span class="pill">Investment auto-detect</span><span class="pill">Recurring / EMI detection</span>
+      <span class="pill">Duplicate detection</span><span class="pill">AI money coach</span><span class="pill">Savings goals</span>
+      <span class="pill">Category budgets + alerts</span><span class="pill">Money lessons</span><span class="pill">Health score</span>
+      <span class="pill">Money-tree rewards</span><span class="pill">Parent PDF report</span><span class="pill">Bilingual EN/Urdu</span>
+      <span class="pill">PIN gate</span><span class="pill">Mobile-first</span>
+    </div>
+    <p style="margin-top:1.4em" class="muted">Each one earns its place by answering a question or building a habit — not for the screenshot.</p>
+  </section>
+
+  <!-- 8. Engineering trade-offs -->
+  <section class="slide">
+    <div class="kicker">Engineering trade-offs</div>
+    <h2>What I optimized for in 48h</h2>
+    <div class="grid g2">
+      <div class="card"><h3>Reliability of the demo</h3><p>localStorage + graceful AI fallback → it always works, even offline or when Gemini is rate-limited.</p></div>
+      <div class="card"><h3>One code path</h3><p>Gmail pulls raw RFC822 and reuses the exact upload parser. Less surface area, consistent output.</p></div>
+      <div class="card"><h3>Idempotent ingestion</h3><p>Re-sync/poll never duplicates; genuine double-charges still flagged.</p></div>
+      <div class="card"><h3>Cut scope deliberately</h3><p>No full auth (PIN instead), no real-time push (5-min poll) — shipped the MVP that matters.</p></div>
+    </div>
+  </section>
+
+  <!-- 9. Scoring map -->
+  <section class="slide">
+    <div class="kicker">How it maps to the rubric</div>
+    <h2>Built like an owner</h2>
+    <table>
+      <tr><th>Criterion</th><th>How Bachat scores</th></tr>
+      <tr><td>Product thinking · 25%</td><td>Solves the real gap; teaches habits; parent visibility — not generic charts</td></tr>
+      <tr><td>Technical execution · 20%</td><td>Layered pipeline, reactive store, MIME parser, regex+AI hybrid, 0 build errors</td></tr>
+      <tr><td>Full-stack · 15%</td><td>Frontend · API/OAuth · AI · DB · Gmail API · Vercel deploy</td></tr>
+      <tr><td>UX · 15%</td><td>Teen + parent flows, bilingual, loaders, PDF, “both can actually use it”</td></tr>
+      <tr><td>Speed &amp; prioritization · 10%</td><td>Pipeline + 2 dashboards first; AI as enhancement, not dependency</td></tr>
+      <tr><td>Founder mindset · 10%</td><td>Crypto, investments, gamification, auto-sync, scam tips — beyond the task</td></tr>
+    </table>
+  </section>
+
+  <!-- 10. Roadmap / close -->
+  <section class="slide cover">
+    <div class="kicker">With another week</div>
+    <h2>Roadmap</h2>
+    <ul>
+      <li>Supabase Auth + parent→teen <strong>invite codes</strong> &amp; row-level security</li>
+      <li><strong>Real-time Gmail push</strong> (watch + Pub/Sub) instead of polling</li>
+      <li><strong>Self-improving parser</strong> — promote AI-parsed formats into regex automatically</li>
+      <li>Live FX rates · spending forecasts · shareable weekly summary</li>
+    </ul>
+    <h1 style="margin-top:.6em">Built something <span class="grad">I'm proud of.</span></h1>
+    <p>Bachat by YouthPay · youthpay-hackathon.vercel.app</p>
+  </section>
+
+</div>
+
+<div class="nav" id="nav"></div>
+<div class="count" id="count"></div>
+<script>
+  const slides=[...document.querySelectorAll('.slide')];
+  const nav=document.getElementById('nav');
+  const count=document.getElementById('count');
+  let i=0;
+  slides.forEach((_,n)=>{const b=document.createElement('button');b.className='dot';b.onclick=()=>go(n);nav.appendChild(b);});
+  function go(n){i=Math.max(0,Math.min(slides.length-1,n));slides.forEach((s,k)=>s.classList.toggle('active',k===i));[...nav.children].forEach((d,k)=>d.classList.toggle('on',k===i));count.textContent=(i+1)+' / '+slides.length;}
+  document.addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key===' ')go(i+1);if(e.key==='ArrowLeft')go(i-1);if(e.key==='Home')go(0);if(e.key==='End')go(slides.length-1);});
+  go(0);
+</script>
+</body>
+</html>
