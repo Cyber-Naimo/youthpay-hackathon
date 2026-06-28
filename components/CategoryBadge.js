@@ -9,6 +9,7 @@ import {
   ArrowLeftRight,
   Banknote,
   Bitcoin,
+  TrendingUp,
   CircleDashed,
 } from "lucide-react";
 
@@ -23,6 +24,7 @@ export const CATEGORY_META = {
   Utilities: { icon: Zap, fg: "#a16207", bg: "#fef9c3", dot: "#eab308" },
   Transfer: { icon: ArrowLeftRight, fg: "#4338ca", bg: "#e0e7ff", dot: "#6366f1" },
   Income: { icon: Banknote, fg: "#15803d", bg: "#dcfce7", dot: "#16a34a" },
+  Investment: { icon: TrendingUp, fg: "#0f766e", bg: "#ccfbf1", dot: "#0d9488" },
   Crypto: { icon: Bitcoin, fg: "#b45309", bg: "#fef3c7", dot: "#f59e0b" },
   Other: { icon: CircleDashed, fg: "#475569", bg: "#f1f5f9", dot: "#94a3b8" },
 };

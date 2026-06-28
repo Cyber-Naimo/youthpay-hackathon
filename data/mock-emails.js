@@ -107,12 +107,39 @@ const specs = [
   { bank: "Meezan Bank", merchant: "POCKET MONEY AMMI", amount: 3000, type: "credit", date: dateAgo(20, 9, 30) },
   { bank: "HBL", merchant: "STEAM GAMES", amount: 2400, type: "debit", date: dateAgo(22, 23, 40) },
   { bank: "UBL", merchant: "KFC", amount: 1320, type: "debit", date: dateAgo(25, 19, 20) },
+
+  // Recurring subscriptions (same merchant + amount, different dates → detected)
+  { bank: "NayaPay", merchant: "NETFLIX", amount: 1100, type: "debit", date: dateAgo(27, 22, 30), tid: "NP10980" },
+  { bank: "NayaPay", merchant: "SPOTIFY", amount: 299, type: "debit", date: dateAgo(28, 21, 0), tid: "NP10999" },
+
+  // Investment — payment to a broker (good behaviour → Investment category)
+  { bank: "UBL", merchant: "AKD SECURITIES", amount: 20000, type: "debit", date: dateAgo(16, 11, 30) },
+
   // Duplicate of #1 (same merchant + amount within 2 minutes) to test dedup
   { bank: "HBL", merchant: "FOODPANDA", amount: 1250, type: "debit", date: dateAgo(1, 13, 21) },
 ];
 
+// Raw bank SMS samples (most Pakistani alerts are SMS). Tagged source "sms".
+const smsSpecs = [
+  { body: `HBL: Rs 950 debited at CAREEM on ${fmtDMY(dateAgo(2, 9, 0))}. Avbl Bal Rs 9,200`, date: dateAgo(2, 9, 0) },
+  { body: `JazzCash: You have paid Rs 450 to FOODPANDA on ${fmtDMY(dateAgo(3, 20, 0))}. TID 99102`, date: dateAgo(3, 20, 0) },
+  { body: `Easypaisa: Rs 2000 received from POCKET MONEY on ${fmtDMY(dateAgo(6, 10, 0))}. Bal Rs 5,000`, date: dateAgo(6, 10, 0) },
+];
+
+// Crypto / Web3 samples (Binance). USDT auto-converts to PKR. Tagged "gmail".
+const cryptoSpecs = [
+  {
+    body: `Binance: Payment Receive Successful. You received an incoming transfer Time: ${fmtDMY(dateAgo(8, 14, 0))} From: kamran727 Amount: 25 USDT`,
+    date: dateAgo(8, 14, 0),
+  },
+  {
+    body: `Binance: USDT Withdrawal Successful. You have successfully withdrawn 40 USDT from your account on ${fmtDMY(dateAgo(5, 16, 0))}.`,
+    date: dateAgo(5, 16, 0),
+  },
+];
+
 function build() {
-  return specs.map((s, i) => {
+  const emails = specs.map((s, i) => {
     const r = renderers[s.bank](s);
     return {
       id: `mock-${i + 1}`,
@@ -120,9 +147,29 @@ function build() {
       sender: r.sender,
       raw_body: r.body,
       received_at: s.date.toISOString(),
+      source: "sample",
       processed: false,
     };
   });
+  const sms = smsSpecs.map((s, i) => ({
+    id: `sms-${i + 1}`,
+    subject: "SMS",
+    sender: "sms",
+    raw_body: s.body,
+    received_at: s.date.toISOString(),
+    source: "sms",
+    processed: false,
+  }));
+  const crypto = cryptoSpecs.map((s, i) => ({
+    id: `crypto-${i + 1}`,
+    subject: "Binance",
+    sender: "do-not-reply@ses.binance.com",
+    raw_body: s.body,
+    received_at: s.date.toISOString(),
+    source: "gmail",
+    processed: false,
+  }));
+  return [...emails, ...sms, ...crypto];
 }
 
 // Rebuild on each access so dates stay relative to "today".

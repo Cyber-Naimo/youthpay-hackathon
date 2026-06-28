@@ -35,6 +35,7 @@ import CoachWidget from "@/components/CoachWidget";
 import ActivityPanel from "@/components/ActivityPanel";
 import RecommendationsCard from "@/components/RecommendationsCard";
 import SubscriptionsCard from "@/components/SubscriptionsCard";
+import RewardsCard from "@/components/RewardsCard";
 
 /* ── Tilla: light-aurora teen dashboard (sidebar + main/rail layout) ── */
 
@@ -161,6 +162,8 @@ export default function TeenDashboard() {
 
             {/* Rail */}
             <div className="space-y-5 lg:w-[340px] lg:shrink-0">
+              <RewardsCard />
+
               <Card className="flex flex-col items-center">
                 <p className="mb-2 text-xs font-bold uppercase tracking-wide text-slate-400">
                   {t("healthScore")}

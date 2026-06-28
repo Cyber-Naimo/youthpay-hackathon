@@ -122,6 +122,7 @@ export default function UploadZone({ onComplete }) {
         sender: e.sender,
         body: e.raw_body,
         received_at: e.received_at,
+        source: e.source,
       }));
       const res = await fetch("/api/parse-email", {
         method: "POST",

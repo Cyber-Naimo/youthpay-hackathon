@@ -115,13 +115,12 @@ function ParentDashboardInner() {
             >
               <Receipt size={14} /> Activity
             </Link>
-            <button
-              type="button"
-              onClick={() => window.print()}
+            <Link
+              href="/parent/report"
               className="flex items-center gap-1.5 rounded-lg bg-trust-600 px-3 py-2 text-xs font-semibold text-white transition hover:bg-trust-700"
             >
-              <FileDown size={14} /> Export PDF
-            </button>
+              <FileDown size={14} /> Report
+            </Link>
             <Link
               href="/teen"
               className="flex items-center gap-1.5 rounded-lg bg-slate-100 px-3 py-2 text-xs font-semibold text-slate-600 transition hover:bg-slate-200"

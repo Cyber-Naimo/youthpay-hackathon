@@ -18,6 +18,7 @@ import {
   ArrowDownLeft,
   ReceiptText,
   Database,
+  Copy,
 } from "lucide-react";
 import { useTransactions } from "@/lib/useTransactions";
 import { updateTransaction, deleteTransaction, mergeTransactions, clearAll } from "@/lib/store";
@@ -45,6 +46,7 @@ export default function ActivityPanel() {
   const [typeF, setTypeF] = useState("all");
   const [cat, setCat] = useState("all");
   const [bank, setBank] = useState("all");
+  const [hideDupes, setHideDupes] = useState(false);
   const [editing, setEditing] = useState(null);
   const [draft, setDraft] = useState({});
   const [adding, setAdding] = useState(false);
@@ -70,8 +72,11 @@ export default function ActivityPanel() {
     if (typeF !== "all") l = l.filter((t) => t.type === typeF);
     if (cat !== "all") l = l.filter((t) => t.category === cat);
     if (bank !== "all") l = l.filter((t) => t.bank_name === bank);
+    if (hideDupes) l = l.filter((t) => !t.is_duplicate);
     return l;
-  }, [transactions, q, source, typeF, cat, bank]);
+  }, [transactions, q, source, typeF, cat, bank, hideDupes]);
+
+  const dupeCount = transactions.filter((t) => t.is_duplicate).length;
 
   function startEdit(t) {
     setEditing(t.id);
@@ -187,6 +192,11 @@ export default function ActivityPanel() {
               ))}
             </select>
           )}
+          {dupeCount > 0 && (
+            <Chip active={hideDupes} onClick={() => setHideDupes((v) => !v)}>
+              {hideDupes ? "Show" : "Hide"} duplicates ({dupeCount})
+            </Chip>
+          )}
         </div>
       </div>
 
@@ -219,12 +229,19 @@ function Row({ t, onEdit, onDelete }) {
   const src = srcMeta(t.source || "email");
   const isCredit = t.type === "credit";
   return (
-    <li className={`flex items-center gap-3 rounded-2xl border border-slate-100 bg-white p-3 ${t.is_duplicate ? "opacity-60" : ""}`}>
+    <li className={`flex items-center gap-3 rounded-2xl border p-3 ${t.is_duplicate ? "border-amber-200 bg-amber-50/40" : "border-slate-100 bg-white"}`}>
       <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl" style={{ background: meta.bg, color: meta.fg }}>
         <meta.icon size={18} strokeWidth={2.2} />
       </span>
       <div className="min-w-0 flex-1">
-        <p className="truncate text-sm font-bold text-slate-900">{t.merchant_name || "Unknown"}</p>
+        <p className="flex items-center gap-2 truncate text-sm font-bold text-slate-900">
+          <span className="truncate">{t.merchant_name || "Unknown"}</span>
+          {t.is_duplicate && (
+            <span className="inline-flex shrink-0 items-center gap-1 rounded-md bg-amber-200 px-1.5 py-0.5 text-[10px] font-bold uppercase text-amber-800">
+              <Copy size={9} /> Duplicate
+            </span>
+          )}
+        </p>
         <div className="mt-1 flex flex-wrap items-center gap-1.5 text-xs text-slate-400">
           <span className="inline-flex items-center gap-1 rounded-md px-1.5 py-0.5 text-[10px] font-bold" style={{ color: src.fg, background: src.bg }}>
             <src.icon size={9} /> {src.label}
