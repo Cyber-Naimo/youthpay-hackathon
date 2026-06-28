@@ -1,36 +1,72 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# YouthPay — Financial Intelligence Engine
 
-## Getting Started
+Pakistan's first financial intelligence platform for teenagers (13–17). It ingests
+Pakistani bank / wallet / crypto transaction emails (Gmail auto-fetch, `.eml`
+upload, SMS paste, or manual entry), parses them into structured transactions,
+categorizes and analyzes spending, and shows two dashboards:
 
-First, run the development server:
+- **Tilla** (teen) — playful, light-aurora dashboard with health score, savings
+  goals, AI coach, needs-vs-wants, recommendations.
+- **Parent** — clean, trustworthy summary (PIN-protected), with alerts, PDF export.
 
+## Stack
+Next.js 16 (App Router, JS) · Tailwind v4 · Recharts · Gemini (AI) · Supabase (optional) · localStorage-first.
+
+## Run locally
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
+cp .env.example .env   # fill in your keys (see below)
+npm run dev            # http://localhost:3000
 ```
+Click **Load Sample Data** to try it instantly — no keys required.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Parsing supported
+HBL · UBL · Meezan · Easypaisa · JazzCash · SadaPay · NayaPay · Standard Chartered ·
+Binance (crypto, USDT/BTC/… → PKR). Regex-first, Gemini fallback when confidence < 0.7.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Deploy to Vercel
 
-## Learn More
+1. Push this repo to GitHub.
+2. On [vercel.com](https://vercel.com) → **Add New → Project** → import the repo → **Deploy**.
+3. Add **Environment Variables** (Settings → Environment Variables) — same keys as `.env.example`:
+   - `GEMINI_API_KEY`
+   - `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`
+   - `GOOGLE_REDIRECT_URI = https://YOUR-APP.vercel.app/api/gmail/callback`
+   - `GMAIL_FETCH_DAYS=30`, `GMAIL_FETCH_MAX=50`
+   - (optional) `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+4. In **Google Cloud Console → Credentials → your OAuth client**, add the prod redirect URI:
+   `https://YOUR-APP.vercel.app/api/gmail/callback`
+5. Redeploy. App runs fully (localStorage) even without Supabase.
 
-To learn more about Next.js, take a look at the following resources:
+## Supabase (optional cloud persistence)
+The app works on localStorage by default. To persist parsed transactions to a DB:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+1. Create a project at [supabase.com](https://supabase.com).
+2. SQL editor → run:
+   ```sql
+   create table emails (
+     id uuid primary key default gen_random_uuid(),
+     raw_body text, subject text, sender text,
+     received_at timestamptz, processed boolean default false,
+     created_at timestamptz default now()
+   );
+   create table transactions (
+     id uuid primary key default gen_random_uuid(),
+     email_id uuid references emails(id),
+     merchant_name text, amount numeric(12,2),
+     type text, date timestamptz, payment_method text,
+     bank_name text, category text, raw_text text,
+     is_duplicate boolean default false, confidence numeric(3,2),
+     created_at timestamptz default now()
+   );
+   ```
+3. Settings → API → copy **Project URL** + **anon key** into Vercel env
+   (`NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`).
+4. The ingestion pipeline best-effort writes to Supabase when configured; localStorage
+   stays the instant client source of truth.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Security
+- `.env*` is gitignored — never commit real keys.
+- `*.eml` is gitignored — personal/account emails never ship.
