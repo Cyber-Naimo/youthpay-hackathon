@@ -5,6 +5,9 @@ import { RefreshCw, Check, Mail, X } from "lucide-react";
 import { mergeTransactions } from "@/lib/store";
 
 const DISMISS_KEY = "yp_gmail_prompt_dismissed";
+const LAST_KEY = "yp_gmail_lastsync";
+const CONNECTED_KEY = "yp_gmail_connected";
+const THROTTLE_MS = 10 * 60 * 1000; // don't re-sync on navigation within 10 min
 
 // Connect Gmail once → silently fetch on load + poll for new bank emails.
 // Uses the server-side refresh token, so no re-auth. The toast always
@@ -43,6 +46,9 @@ export default function AutoGmailSync() {
         if (cancelled) return false;
         if (res.status === 401) {
           clearTimers();
+          try {
+            localStorage.removeItem(CONNECTED_KEY);
+          } catch {}
           // Not connected — offer a one-click connect prompt (unless dismissed).
           const dismissed = localStorage.getItem(DISMISS_KEY) === "1";
           setPhase(silent && !dismissed ? "connect" : "hidden");
@@ -54,6 +60,10 @@ export default function AutoGmailSync() {
           const before = JSON.parse(localStorage.getItem(key) || "[]").length;
           if (data.transactions?.length) mergeTransactions(data.transactions);
           const after = JSON.parse(localStorage.getItem(key) || "[]").length;
+          try {
+            localStorage.setItem(LAST_KEY, String(Date.now()));
+            localStorage.setItem(CONNECTED_KEY, "1");
+          } catch {}
           if (cancelled) return false;
           clearTimers();
           setAdded(Math.max(0, after - before));
@@ -70,7 +80,16 @@ export default function AutoGmailSync() {
     }
 
     (async () => {
-      const connected = await sync(true); // first load: silent
+      const last = Number(localStorage.getItem(LAST_KEY) || 0);
+      const wasConnected = localStorage.getItem(CONNECTED_KEY) === "1";
+      const fresh = Date.now() - last < THROTTLE_MS;
+
+      // Skip the fetch on quick navigation if we synced recently; just resume
+      // polling. Otherwise do a silent first sync.
+      let connected = wasConnected;
+      if (!(fresh && wasConnected)) {
+        connected = await sync(true);
+      }
       if (connected && !cancelled) timer = setInterval(() => sync(false), POLL_MS);
     })();
 
